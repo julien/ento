@@ -51,3 +51,48 @@ pub fn from_file(path: String) -> Result<Vec<Variable>, &'static str> {
         Ok(variables)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    pub fn test_variable_try_from_ok() {
+        let input = "FOO=BAR";
+        let var = Variable::try_from(input.to_string()).unwrap();
+        assert_eq!(&var.key, "FOO");
+        assert_eq!(&var.val, "BAR");
+    }
+
+    #[test]
+    pub fn test_variable_try_from_ko() {
+        let input = "FOO";
+        let var: Result<Variable, &str> = Variable::try_from(input.to_string());
+        assert_eq!(var.is_err(), true);
+        assert_eq!(var.err().unwrap(), "Input must have the format KEY=VAL");
+    }
+
+    #[test]
+    pub fn test_from_file_ok() {
+        let res: Result<Vec<Variable>, &str> = from_file(String::from("./env"));
+        let vars = res.unwrap();
+        assert_eq!(vars.is_empty(), false);
+    }
+
+    #[test]
+    pub fn test_from_file_non_exisiting_file() {
+        let res: Result<Vec<Variable>, &str> = from_file(String::from("./nopes"));
+        assert_eq!(res.is_err(), true);
+        assert_eq!(res.err().unwrap(), "Couldn't open file");
+    }
+
+    #[test]
+    pub fn test_from_file_no_variables() {
+        let res: Result<Vec<Variable>, &str> = from_file(String::from("./empty"));
+        assert_eq!(res.is_err(), true);
+        assert_eq!(
+            res.err().unwrap(),
+            "Couldn't find any environment variables"
+        );
+    }
+}
