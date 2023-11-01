@@ -1,3 +1,4 @@
+use ento::*;
 use std::{env, io, process};
 
 fn main() -> io::Result<()> {
@@ -7,7 +8,7 @@ fn main() -> io::Result<()> {
         process::exit(1);
     }
 
-    let variables: Result<Vec<ento::Variable>, &str> = ento::from_file(path.unwrap());
+    let variables: Result<Vec<Variable>, &str> = from_file(path.unwrap());
     if variables.is_err() {
         eprintln!("error: {:?}", variables.unwrap());
         process::exit(1);
