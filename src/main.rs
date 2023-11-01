@@ -16,7 +16,8 @@ fn main() -> io::Result<()> {
 
     println!("found and set the following environment variables");
     for variable in variables.iter() {
-        println!("{}={}", variable.key, variable.val);
+        let s: String = variable.into();
+        println!("{}", s);
     }
 
     Ok(())

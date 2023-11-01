@@ -25,6 +25,12 @@ impl TryFrom<String> for Variable {
     }
 }
 
+impl From<&Variable> for String {
+    fn from(value: &Variable) -> Self {
+        format!("{}={}", value.key, value.val)
+    }
+}
+
 pub fn from_file(path: String) -> Result<Vec<Variable>, &'static str> {
     let file = File::open(path);
     if file.is_err() {
@@ -94,5 +100,15 @@ mod tests {
             res.err().unwrap(),
             "Couldn't find any environment variables"
         );
+    }
+
+    #[test]
+    pub fn test_from_variable_ok() {
+        let var = &Variable {
+            key: String::from("FOO"),
+            val: String::from("BAR"),
+        };
+        let s: String = var.into();
+        assert_eq!(s, "FOO=BAR");
     }
 }
