@@ -15,7 +15,7 @@ impl TryFrom<String> for Variable {
     fn try_from(value: String) -> Result<Self, Self::Error> {
         let results: Vec<_> = value.split('=').collect();
         if results.len() < 2 {
-            Err("Input must have the format KEY=VAL")
+            Err("Invalid format")
         } else {
             Ok(Self {
                 key: String::from(results[0]),
@@ -75,7 +75,7 @@ mod tests {
         let input = "FOO";
         let var: Result<Variable, &str> = Variable::try_from(String::from(input));
         assert_eq!(var.is_err(), true);
-        assert_eq!(var.err().unwrap(), "Input must have the format KEY=VAL");
+        assert_eq!(var.err().unwrap(), "Invalid format");
     }
 
     #[test]
