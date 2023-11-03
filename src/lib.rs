@@ -18,8 +18,8 @@ impl TryFrom<String> for Variable {
             Err("Input must have the format KEY=VAL")
         } else {
             Ok(Self {
-                key: results[0].to_string(),
-                val: results[1].to_string(),
+                key: String::from(results[0]),
+                val: String::from(results[1]),
             })
         }
     }
@@ -41,7 +41,7 @@ pub fn from_file(path: String) -> Result<Vec<Variable>, &'static str> {
     let mut variables: Vec<Variable> = Vec::new();
 
     for line in reader.lines() {
-        let line = line.unwrap_or_else(|_| "".to_string());
+        let line = line.unwrap_or_else(|_| String::from(""));
         let variable: Result<Variable, &str> = Variable::try_from(line);
         if variable.is_err() {
             continue;
@@ -64,8 +64,8 @@ mod tests {
 
     #[test]
     pub fn test_variable_try_from_ok() {
-        let input = "FOO=BAR";
-        let var = Variable::try_from(input.to_string()).unwrap();
+        let input = String::from("FOO=BAR");
+        let var = Variable::try_from(input).unwrap();
         assert_eq!(&var.key, "FOO");
         assert_eq!(&var.val, "BAR");
     }
@@ -73,7 +73,7 @@ mod tests {
     #[test]
     pub fn test_variable_try_from_ko() {
         let input = "FOO";
-        let var: Result<Variable, &str> = Variable::try_from(input.to_string());
+        let var: Result<Variable, &str> = Variable::try_from(String::from(input));
         assert_eq!(var.is_err(), true);
         assert_eq!(var.err().unwrap(), "Input must have the format KEY=VAL");
     }
